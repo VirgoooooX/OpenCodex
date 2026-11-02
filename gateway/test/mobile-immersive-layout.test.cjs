@@ -5,7 +5,7 @@ const test = require("node:test");
 const vm = require("node:vm");
 
 const ROOT = path.resolve(__dirname, "../..");
-const JS = fs.readFileSync(path.join(ROOT, "web-shell/internal/providers/codex-mobile-immersive-layout.js"), "utf8");
+const JS = fs.readFileSync(path.join(ROOT, "web-shell/codex-mobile-immersive-layout.js"), "utf8");
 const CSS = fs.readFileSync(path.join(ROOT, "web-shell/codex-mobile-immersive-layout.css"), "utf8");
 const ASSETS = fs.readFileSync(path.join(ROOT, "gateway/runtime/http/static-assets.cjs"), "utf8");
 
