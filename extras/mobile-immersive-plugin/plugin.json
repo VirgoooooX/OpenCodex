@@ -1,0 +1,11 @@
+{
+  "id": "user.mobile-immersive-layout",
+  "apiVersion": 2,
+  "entry": "dist/index.mjs",
+  "sdkVersion": "^2.0.0",
+  "name": "Mobile Immersive Layout V1",
+  "label": "沉浸式移动端布局",
+  "desc": "手机端浮动功能菜单与手势对话抽屉，桌面端保持不变。",
+  "defaultEnabled": true,
+  "order": 920
+}
