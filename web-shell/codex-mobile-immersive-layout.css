@@ -63,7 +63,9 @@
   html[data-opencodex-mobile-immersive="true"][data-oc-mobile-drawer-open="true"] [data-oc-mobile-drawer-panel="true"] {
     pointer-events:auto;
   }
-  html[data-opencodex-mobile-immersive="true"] [data-oc-mobile-sidebar-grid="true"] {
+  html[data-opencodex-mobile-immersive="true"] [data-oc-mobile-sidebar-grid="true"],
+  html[data-opencodex-mobile-immersive="true"] [data-oc-mobile-rail-grid="true"] {
+    /* The original grid may reserve a column even after its rail is fixed. */
     grid-template-columns:minmax(0,1fr) !important;
   }
   html[data-opencodex-mobile-immersive="true"] [data-app-shell-main-surface],
