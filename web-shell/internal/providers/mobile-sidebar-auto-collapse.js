@@ -181,6 +181,14 @@
         if (collapseTimer) scheduler.clearTimeout(collapseTimer);
         collapseTimer = scheduler.setTimeout(() => {
           collapseTimer = null;
+          // Mobile Layout V1 owns the overlay state. Never toggle the official
+          // sidebar here: doing so unmounts the React content behind the drawer.
+          const drawer = w.__OpenCodexMobileLayout;
+          if (drawer?.isEnabled?.()) {
+            drawer.closeDrawer();
+            modificationEffects?.primary?.emit();
+            return;
+          }
           const panel = sidebarPanelElement();
           if (!panel || !visibleElement(panel)) return;
           const toggleButton = findSidebarToggleButton();
