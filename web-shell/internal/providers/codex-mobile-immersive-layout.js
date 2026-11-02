@@ -110,13 +110,16 @@
   function onClick(e) {
     if (!active()) return;
     if (state.menu) {
-      if (state.rail && state.rail.contains(e.target)) setMenu(false);
+      if (state.rail && state.rail.contains(e.target)) w.setTimeout(function(){setMenu(false);},0);
       else if (!state.button || !state.button.contains(e.target)) setMenu(false);
     }
     if (state.open && state.panel && state.panel.contains(e.target) && isIn(e.target,rowSel)) setDrawer(false);
   }
   function targetExcluded(e) {
-    return isIn(e.target,"input,textarea,select,button,a,[role='button'],[role='slider'],[contenteditable='true'],pre,code,[data-oc-mobile-menu-button]") ||
+    var excluded = state.open && state.panel && state.panel.contains(e.target) ?
+      "input,textarea,select,button,a,[role='slider'],[contenteditable='true'],pre,code,[data-oc-mobile-menu-button]" :
+      "input,textarea,select,button,a,[role='button'],[role='slider'],[contenteditable='true'],pre,code,[data-oc-mobile-menu-button]";
+    return isIn(e.target,excluded) ||
        !!(state.rail && state.rail.contains(e.target));
   }
   function touchStart(e) {
