@@ -191,7 +191,7 @@
   w.__OpenCodexMobileLayout=Object.freeze({
     closeDrawer:function(){setDrawer(false);},
     openDrawer:function(){setDrawer(true);},
-    isEnabled:function(){return active()&&d.documentElement.getAttribute("data-opencodex-mobile-immersive")==="true";}
+    isEnabled:function(){return active()&&!!state.panel&&d.documentElement.getAttribute("data-opencodex-mobile-immersive")==="true";}
   });
   function start(){
     if(!d.body)return;
