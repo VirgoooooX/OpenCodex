@@ -293,7 +293,7 @@ const WEB_SHELL_STATIC_FILES = new Map([
   ],
   [CODEX_APP_HOST_MESSAGE_CODEC_PATH, path.join(WEB_SHELL_DIR, "codex-app-host-message-codec.js")],
   [CODEX_BRIDGE_POLYFILL_PATH, path.join(INTERNAL_PROVIDER_DIR, "codex-bridge-polyfill.js")],
-  [CODEX_MOBILE_LAYOUT_SCRIPT_PATH, path.join(INTERNAL_PROVIDER_DIR, "codex-mobile-immersive-layout.js")],
+  [CODEX_MOBILE_LAYOUT_SCRIPT_PATH, path.join(WEB_SHELL_DIR, "codex-mobile-immersive-layout.js")],
   [CODEX_MOBILE_LAYOUT_CSS_PATH, path.join(WEB_SHELL_DIR, "codex-mobile-immersive-layout.css")],
   [CODEX_REMOTE_FILE_ACTIONS_PATH, path.join(INTERNAL_PROVIDER_DIR, "codex-remote-file-actions.js")],
   [CODEX_WORKSPACE_ROOT_PICKER_CSS_PATH, path.join(WEB_SHELL_DIR, "codex-workspace-root-picker.css")],
