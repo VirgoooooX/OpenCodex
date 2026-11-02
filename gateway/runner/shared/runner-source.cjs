@@ -2,7 +2,36 @@ function gatewayRunnerMainSource() {
   return `// 这个 runner 壳只负责把官方 Electron 运行时切到 OpenCodex gateway 入口。
 const fs = require("fs");
 const path = require("path");
+
+// Optional file-based tracing survives Electron GUI processes that do not
+// attach to a console. It is disabled unless explicitly requested.
+const runnerDiagnosticsEnabled = process.env.OPENCODEX_RUNNER_DIAGNOSTICS === "1";
+function runnerBootTrace(phase, details) {
+  if (!runnerDiagnosticsEnabled) return;
+  try {
+    const dir = process.env.CODEX_WEB_RUNTIME_DIR || process.cwd();
+    fs.mkdirSync(dir, { recursive: true });
+    const log = path.join(dir, "runner-bootstrap.log");
+    fs.appendFileSync(log, new Date().toISOString() + " [runner-boot] " + phase + " " + JSON.stringify(details || {}) + "\\n", "utf8");
+  } catch {}
+}
+runnerBootTrace("entry-reached", {
+  electron: process.versions.electron || "",
+  executable: process.execPath,
+  argv: process.argv.slice(1),
+});
+process.on("exit", (code) => runnerBootTrace("process-exit", { code }));
+process.on("uncaughtExceptionMonitor", (error) => runnerBootTrace("uncaught-exception", {
+  message: String(error && error.message || error),
+  stack: String(error && error.stack || "").slice(0, 2400),
+}));
 const { app } = require("electron");
+runnerBootTrace("electron-module-loaded", { hasApp: !!app });
+if (app && runnerDiagnosticsEnabled) {
+  app.on("ready", () => runnerBootTrace("electron-ready"));
+  app.on("before-quit", () => runnerBootTrace("electron-before-quit"));
+}
+
 
 const entry = process.env.OPENCODEX_GATEWAY_ENTRY;
 const gatewayAgentMode = process.env.OPENCODEX_GATEWAY_AGENT_MODE === "1";
