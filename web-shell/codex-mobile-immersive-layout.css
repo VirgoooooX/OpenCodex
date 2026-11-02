@@ -92,6 +92,10 @@
     touch-action:manipulation;
     cursor:pointer;
   }
+  html[data-opencodex-mobile-immersive="true"][data-oc-mobile-drawer-open="true"] .oc-mobile-menu-button {
+    opacity:0;
+    pointer-events:none;
+  }
   html[data-opencodex-mobile-immersive="true"][data-oc-mobile-rail-found="false"] .oc-mobile-menu-button {
     display:none;
   }
