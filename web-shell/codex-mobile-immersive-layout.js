@@ -7,7 +7,7 @@
   var panelSel = ".app-shell-left-panel";
   var railSel = ["[data-app-shell-nav-rail]","[data-app-shell-navigation-rail]",".app-shell-left-rail",".app-shell-nav-rail",".app-shell-navigation-rail","[data-app-shell-focus-area='navigation']"];
   var rowSel = "[data-app-action-sidebar-thread-row],[role='button'].h-token-nav-row,[data-app-action-sidebar-new-chat],[data-app-action-new-thread]";
-  var state = { panel:null,rail:null,grid:null,header:null,button:null,mask:null,controls:null,menu:false,open:false,gesture:null,frame:0,queued:null,scanTimer:0,lastToggle:0 };
+  var state = { panel:null,rail:null,grid:null,railGrid:null,header:null,button:null,mask:null,controls:null,menu:false,open:false,gesture:null,frame:0,queued:null,scanTimer:0,lastToggle:0,officialOpenRequested:false };
   var active = function () { return !!(mq && mq.matches); };
   function bySelector(selector) { return d.querySelector(selector); }
   function rootAttr(key,value) { d.documentElement.setAttribute("data-oc-mobile-"+key, String(value)); }
@@ -24,6 +24,28 @@
       if (r.width>=38 && r.width<=106 && r.height>=190 && r.left>=-8 && r.left<=48 &&
           c.querySelectorAll("button,a,[role='button']").length>=4) return c;
     }
+    // Newer official builds can use anonymous wrapper divs for the icon rail.
+    // Probe the leftmost painted region as a narrow, tall navigation strip.
+    if (typeof d.elementFromPoint === "function") {
+      var sampleY=[96,180,270];
+      for(var z=0;z<sampleY.length;z++) {
+        var leaf=d.elementFromPoint(25,Math.min(sampleY[z],w.innerHeight-8));
+        for(var node=leaf;node && node!==d.body;node=node.parentElement) {
+          if(node.closest && node.closest(panelSel))break;
+          if(!node.getBoundingClientRect || !node.querySelectorAll)continue;
+          var box=node.getBoundingClientRect();
+          if(box.width>=38 && box.width<=106 && box.height>=190 &&
+             box.left>=-8 && box.left<=48 &&
+             node.querySelectorAll("button,a,[role='button']").length>=4)return node;
+        }
+      }
+    }
+    return null;
+  }
+  function gridAncestor(node, main, limit) {
+    for(var hops=0;node && node!==d.body && hops<limit;hops++,node=node.parentElement) {
+      if(node.contains(main) && w.getComputedStyle(node).display==="grid")return node;
+    }
     return null;
   }
   function toggleOfficialOpen() {
@@ -33,8 +55,11 @@
         return w.getComputedStyle(el).viewTransitionName==="sidebar-trigger";
       });
     }
-    if (b && b.click && Date.now()-state.lastToggle>2000) {
+    if (!state.officialOpenRequested && b && b.click && Date.now()-state.lastToggle>2000) {
+      // The official React sidebar must stay mounted while visually closed.
+      // Do not repeatedly flip the native toggle if the DOM is still loading.
       state.lastToggle=Date.now();
+      state.officialOpenRequested=true;
       b.click();
     }
   }
@@ -46,15 +71,17 @@
   function scan() {
     if (!active() || !d.body) return;
     var panel=bySelector(panelSel);
+    if (panel) state.officialOpenRequested=false;
     if (!panel && bySelector("[data-app-shell-main-surface],.app-shell-main-content-viewport")) toggleOfficialOpen();
     state.panel=putMark(panel,state.panel,"data-oc-mobile-drawer-panel");
     state.rail=putMark(findRail(),state.rail,"data-oc-mobile-navigation-rail");
     rootAttr("rail-found",!!state.rail);
     state.header=bySelector("header[data-app-shell-header-edge-scroll]");
     var main=bySelector("[data-app-shell-main-surface],.app-shell-main-content-viewport");
-    var parent=panel && panel.parentElement;
-    var grid=parent && main && parent.contains(main) && w.getComputedStyle(parent).display==="grid" ? parent : null;
+    var grid=panel && main ? gridAncestor(panel.parentElement,main,7) : null;
+    var railGrid=state.rail && main ? gridAncestor(state.rail.parentElement,main,9) : null;
     state.grid=putMark(grid,state.grid,"data-oc-mobile-sidebar-grid");
+    state.railGrid=putMark(railGrid,state.railGrid,"data-oc-mobile-rail-grid");
     if (panel && !state.gesture) {
       panel.style.setProperty("--oc-mobile-drawer-offset",state.open?"0px":"-105%");
     }
@@ -179,11 +206,11 @@
     if(state.frame)w.cancelAnimationFrame(state.frame);
     if(state.scanTimer)w.clearTimeout(state.scanTimer);
     state.frame=0;state.scanTimer=0;
-    [[state.panel,"data-oc-mobile-drawer-panel"],[state.rail,"data-oc-mobile-navigation-rail"],[state.grid,"data-oc-mobile-sidebar-grid"]].forEach(function(pair) {
+    [[state.panel,"data-oc-mobile-drawer-panel"],[state.rail,"data-oc-mobile-navigation-rail"],[state.grid,"data-oc-mobile-sidebar-grid"],[state.railGrid,"data-oc-mobile-rail-grid"]].forEach(function(pair) {
       if(pair[0])pair[0].removeAttribute(pair[1]);
     });
     if(state.panel)state.panel.style.removeProperty("--oc-mobile-drawer-offset");
-    state.panel=state.rail=state.grid=state.header=null;
+    state.panel=state.rail=state.grid=state.railGrid=state.header=null;
     ["data-opencodex-mobile-immersive","data-oc-mobile-drawer-open","data-oc-mobile-nav-open","data-oc-mobile-rail-found","data-oc-mobile-drawer-animate"].forEach(function(a){d.documentElement.removeAttribute(a);});
     if(state.controls)state.controls.remove();
     state.controls=state.button=state.mask=null;
