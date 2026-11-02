@@ -38,7 +38,8 @@ OpenCodex v2 的公开 SDK 暂不直接支持触摸手势和任意 CSS 生命周
 - 本机 `node --check dist/index.mjs`：通过
 - 经 Gateway 源码 `listPluginEntries()` 验证插件 manifest 和 ESM 入口能被发现：通过
 - 独立 Chrome 移动端/桌面端模拟测试：9/9 通过（含按钮、浮动菜单、手势、遮罩、关闭清理、桌面隔离）
-- **未通过完整 Release + 手机端联调**：当前机器上的 Gateway 冷启动（包括未配置插件的原版 Release）仍以 `code=0` 提前退出。请先修复该问题后再启用插件测试。
+- **未通过完整 Release + 手机端联调**：当前机器上的 Gateway 冷启动（包括未配置插件的原版 Release）仍以 `code=0` 提前退出。
+- 单独使用标准 Electron 42.0.1 能执行 Gateway JS 并短暂启动 HTTP 服务，但官方 Codex 主动报错 `Codex requires the Owl app shell; stock Electron is no longer supported.` 后退出（code=1）。**不能把标准 Electron 当作可用的生产替代方案**；需要修复官方 Owl Runner 的冷启动兼容性，才能验证手机端。
 
 ## 撤销
 
