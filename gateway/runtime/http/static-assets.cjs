@@ -67,6 +67,8 @@ const OPENCODEX_SIDEBAR_PREVIEW_PATH = "/codex-sidebar-preview.js";
 const OPENCODEX_OFFSCREEN_ANIMATION_GUARD_PATH = "/codex-offscreen-animation-guard.js";
 const CODEX_APP_HOST_MESSAGE_CODEC_PATH = "/codex-app-host-message-codec.js";
 const CODEX_BRIDGE_POLYFILL_PATH = "/codex-bridge-polyfill.js";
+const CODEX_MOBILE_LAYOUT_SCRIPT_PATH = "/codex-mobile-immersive-layout.js";
+const CODEX_MOBILE_LAYOUT_CSS_PATH = "/codex-mobile-immersive-layout.css";
 const CODEX_REMOTE_FILE_ACTIONS_PATH = "/codex-remote-file-actions.js";
 const CODEX_WORKSPACE_ROOT_PICKER_CSS_PATH = "/codex-workspace-root-picker.css";
 const CODEX_WORKSPACE_ROOT_PICKER_PATH = "/codex-workspace-root-picker.js";
@@ -291,6 +293,8 @@ const WEB_SHELL_STATIC_FILES = new Map([
   ],
   [CODEX_APP_HOST_MESSAGE_CODEC_PATH, path.join(WEB_SHELL_DIR, "codex-app-host-message-codec.js")],
   [CODEX_BRIDGE_POLYFILL_PATH, path.join(INTERNAL_PROVIDER_DIR, "codex-bridge-polyfill.js")],
+  [CODEX_MOBILE_LAYOUT_SCRIPT_PATH, path.join(INTERNAL_PROVIDER_DIR, "codex-mobile-immersive-layout.js")],
+  [CODEX_MOBILE_LAYOUT_CSS_PATH, path.join(WEB_SHELL_DIR, "codex-mobile-immersive-layout.css")],
   [CODEX_REMOTE_FILE_ACTIONS_PATH, path.join(INTERNAL_PROVIDER_DIR, "codex-remote-file-actions.js")],
   [CODEX_WORKSPACE_ROOT_PICKER_CSS_PATH, path.join(WEB_SHELL_DIR, "codex-workspace-root-picker.css")],
   [CODEX_WORKSPACE_ROOT_PICKER_PATH, path.join(INTERNAL_PROVIDER_DIR, "codex-workspace-root-picker.js")],
@@ -700,6 +704,7 @@ function createStaticAssetService({
         OPENCODEX_WINDOW_CONTROLS_OVERLAY_PATH,
         CODEX_APP_HOST_MESSAGE_CODEC_PATH,
         CODEX_BRIDGE_POLYFILL_PATH,
+        CODEX_MOBILE_LAYOUT_SCRIPT_PATH,
         CODEX_REMOTE_FILE_ACTIONS_PATH,
         CODEX_WORKSPACE_ROOT_PICKER_PATH,
         CODEX_TOOLTIP_DISMISS_GUARD_PATH,
@@ -988,6 +993,7 @@ function createStaticAssetService({
           // codec 先于 bridge 执行，确保新版 AppHost 的首批结构化帧可以立即编码。
           runtimeScript(CODEX_APP_HOST_MESSAGE_CODEC_PATH),
           runtimeScript(CODEX_BRIDGE_POLYFILL_PATH),
+          runtimeScript(CODEX_MOBILE_LAYOUT_SCRIPT_PATH),
           runtimeScript(CODEX_REMOTE_FILE_ACTIONS_PATH),
           runtimeScript(CODEX_WORKSPACE_ROOT_PICKER_PATH),
           runtimeScript(CODEX_TOOLTIP_DISMISS_GUARD_PATH),
@@ -1012,6 +1018,7 @@ function createStaticAssetService({
       `<link id="codex-smart-model-router-settings-styles" rel="stylesheet" href="${CODEX_SMART_MODEL_ROUTER_SETTINGS_CSS_PATH}">`,
       `<link id="codex-smart-scheduling-summary-styles" rel="stylesheet" href="${CODEX_SMART_SCHEDULING_SUMMARY_CSS_PATH}">`,
       `<link id="codex-web-workspace-root-picker-styles" rel="stylesheet" href="${CODEX_WORKSPACE_ROOT_PICKER_CSS_PATH}">`,
+      `<link id="codex-web-mobile-immersive-layout-styles" rel="stylesheet" href="${CODEX_MOBILE_LAYOUT_CSS_PATH}">`,
       ...runtimeScripts,
     ].join("\n    ");
     if (/<head[^>]*>/i.test(html)) {
