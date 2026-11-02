@@ -71,6 +71,7 @@ function spawnGateway(officialRuntime, officialRuntimeArgs) {
       onExit({ code, signal, restartRequested }) {
         if (activeChild === child) activeChild = null;
         if (restartRequested) return;
+        console.error(`[launcher] gateway exited: code=${code} signal=${signal}`);
         if (signal) {
           // 子进程异常信号只作为失败结果上报；不要再发给当前 Node 进程，否则会生成误导性的二次崩溃报告。
           console.error(`[launcher] gateway exited by signal ${signal}`);
