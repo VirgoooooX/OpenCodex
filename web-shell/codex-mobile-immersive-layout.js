@@ -61,7 +61,7 @@
   }
   function scheduleScan() {
     if (!active() || state.scanTimer) return;
-    if (state.panel && state.panel.isConnected && state.rail && state.rail.isConnected && state.header && state.header.isConnected) return;
+    if (state.panel && state.panel.isConnected && state.rail && state.rail.isConnected) return;
     state.scanTimer=w.setTimeout(function(){ state.scanTimer=0; scan(); },250);
   }
   function setMenu(open) {
